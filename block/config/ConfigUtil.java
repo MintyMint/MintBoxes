@@ -1,0 +1,78 @@
+package com.mint.mintboxes.config;
+
+import com.electronwill.nightconfig.core.file.CommentedFileConfig;
+import com.electronwill.nightconfig.core.io.WritingMode;
+import com.mint.mintboxes.MintBoxes;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Utility for loading TOML config files into ConfigValues.
+ */
+public final class ConfigUtil {
+    private ConfigUtil() {}
+
+    /**
+     * Loads or creates a TOML config, then applies values to ConfigValues.
+     *
+     * @param fileName name of the file (e.g. "keydrops.toml")
+     * @param applier  lambda that copies values into ConfigValues
+     */
+    public static void loadConfig(String fileName, ConfigApplier applier) {
+        Path configPath = Path.of("config", MintBoxes.MODID, fileName);
+
+        CommentedFileConfig configData = CommentedFileConfig.builder(configPath)
+                .sync()
+                .autosave()
+                .writingMode(WritingMode.REPLACE)
+                .build();
+
+        configData.load();
+        applier.apply(configData);
+        configData.close();
+    }
+
+    /**
+     * Reads a double with a fallback.
+     */
+    public static double getDouble(CommentedFileConfig cfg, String path, double def) {
+        return cfg.getOrElse(path, def);
+    }
+
+    /**
+     * Reads an int with a fallback.
+     */
+    public static int getInt(CommentedFileConfig cfg, String path, int def) {
+        return cfg.getOrElse(path, def);
+    }
+
+    /**
+     * Reads a boolean with a fallback.
+     */
+    public static boolean getBool(CommentedFileConfig cfg, String path, boolean def) {
+        return cfg.getOrElse(path, def);
+    }
+
+    /**
+     * Reads a list of strings with fallback.
+     */
+    @SuppressWarnings("unchecked")
+    public static List<String> getList(CommentedFileConfig cfg, String path, List<String> def) {
+        return (List<String>) cfg.getOrElse(path, def);
+    }
+
+    /**
+     * Reads a map of string:string with fallback.
+     */
+    @SuppressWarnings("unchecked")
+    public static Map<String, String> getMap(CommentedFileConfig cfg, String path, Map<String, String> def) {
+        return (Map<String, String>) cfg.getOrElse(path, def);
+    }
+
+    @FunctionalInterface
+    public interface ConfigApplier {
+        void apply(CommentedFileConfig cfg);
+    }
+}
