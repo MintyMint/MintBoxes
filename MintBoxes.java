@@ -14,8 +14,7 @@ public class MintBoxes {
     public static final String MODID = "mintboxes";
     public static final Logger LOGGER = LoggerFactory.getLogger("MintBoxes");
 
-    public MintBoxes()
-    {
+    public MintBoxes() {
         // Load our simple configs right away
         ModConfigs.loadAll();
 
@@ -30,8 +29,7 @@ public class MintBoxes {
         RewardTables.rebuildFromConfig();
     }
 
-    public static void LOG(String msg)
-    {
+    public static void LOG(String msg) {
         LOGGER.info("[MintBoxes] {}", msg);
     }
 }

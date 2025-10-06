@@ -16,9 +16,9 @@ public final class DefaultValues {
     // LootBox Timings
     // ---------------------------
     public static final int DEFAULT_OPEN_TICKS = 30;            // small delay before opening sound
-    public static final int DEFAULT_REWARD_DELAY_TICKS = 100;   // ticks until loot spawns
-    public static final int DEFAULT_CLOSE_TICKS = 60;           // ticks until box closes
-    public static final int DEFAULT_LOCKOUT_TICKS = 100;        // ticks before it can be opened again
+    public static final int DEFAULT_REWARD_DELAY_TICKS = 30;   // ticks until loot spawns
+    public static final int DEFAULT_CLOSE_TICKS = 30;           // ticks until box closes
+    public static final int DEFAULT_LOCKOUT_TICKS = 200;        // ticks before it can be opened again
 
     // ---------------------------
     // Key Drop Chances
