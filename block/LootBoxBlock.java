@@ -55,24 +55,31 @@ public class LootBoxBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.MODEL;
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new LootBoxBlockEntity(pos, state, tier);
+        return new LootBoxBlockEntity(pos, state, this.tier);
     }
 
-    @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return level.isClientSide ? null :
-                createTickerHelper(type, ModRegistry.LOOT_BOX_BE_TYPE.get(),
-                        (sl, pos, st, be) -> {
-                            if (sl instanceof ServerLevel server && be instanceof LootBoxBlockEntity lbe) {
-                                lbe.serverTick(server, pos, st, lbe);
-                            }
-                        });
+        if (level.isClientSide) {
+            return createTickerHelper(type, ModRegistry.LOOT_BOX_BE_TYPE.get(),
+                    (lvl, pos, st, be) -> {
+                        if (be instanceof LootBoxBlockEntity lbe) {
+                            LootBoxBlockEntity.clientTick(lvl, pos, st, lbe);
+                        }
+                    });
+        } else {
+            return createTickerHelper(type, ModRegistry.LOOT_BOX_BE_TYPE.get(),
+                    (sl, pos, st, be) -> {
+                        if (sl instanceof ServerLevel server && be instanceof LootBoxBlockEntity lbe) {
+                            LootBoxBlockEntity.serverTick(server, pos, st, lbe);
+                        }
+                    });
+        }
     }
 
     @Override

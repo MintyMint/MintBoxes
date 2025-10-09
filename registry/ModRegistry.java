@@ -57,7 +57,7 @@ public class ModRegistry {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LootBoxBlockEntity>> LOOT_BOX_BE_TYPE =
             BLOCK_ENTITIES.register("loot_box",
                     () -> BlockEntityType.Builder.of(
-                            (pos, state) -> new LootBoxBlockEntity(pos, state, TIER_STONE),
+                            (pos, state) -> new LootBoxBlockEntity(pos, state, state.getBlock() instanceof LootBoxBlock lb ? lb.getTier() : "stone"),
                             LOOT_BOX_STONE.get(),
                             LOOT_BOX_IRON.get(),
                             LOOT_BOX_GOLD.get(),
@@ -118,12 +118,4 @@ public class ModRegistry {
                         output.accept(ITEM_LOOT_BOX_SPECIAL.get());
                     })
                     .build());
-
-    // Register everything
-    public static void register(IEventBus bus) {
-        BLOCKS.register(bus);
-        ITEMS.register(bus);
-        BLOCK_ENTITIES.register(bus);
-        TABS.register(bus);
-    }
 }

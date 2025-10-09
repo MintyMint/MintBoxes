@@ -40,7 +40,7 @@ public final class LootTableConfig {
             MintBoxes.LOG("Failed to load loottables; using defaults. " + e);
             // fallback to defaults
             ConfigValues.RARITY_COLORS.clear();
-            ConfigValues.RARITY_COLORS.putAll(DefaultValues.RARITY_COLORS);
+            ConfigValues.RARITY_COLORS.putAll(DefaultValues.DEFAULT_RARITY_COLORS);
 
             ConfigValues.REWARD_TABLES.clear();
             ConfigValues.REWARD_TABLES.put("stone", new ArrayList<>(DefaultValues.STONE_REWARDS));
@@ -60,7 +60,7 @@ public final class LootTableConfig {
 
         // rarities
         out.add("[rarities]");
-        DefaultValues.RARITY_COLORS.forEach((k, v) -> out.add(k + " = \"" + v + "\""));
+        DefaultValues.DEFAULT_RARITY_COLORS.forEach((k, v) -> out.add(k + " = \"" + v + "\""));
         out.add("");
 
         // helper to write a tier block

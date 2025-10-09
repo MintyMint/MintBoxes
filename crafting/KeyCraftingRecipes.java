@@ -3,52 +3,84 @@ package com.mint.mintboxes.crafting;
 import com.mint.mintboxes.MintBoxes;
 import com.mint.mintboxes.config.ConfigValues;
 import com.mint.mintboxes.registry.ModRegistry;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 
-public final class KeyCraftingRecipes {
+import java.util.Map;
+import java.util.Optional;
 
-    private KeyCraftingRecipes() {}
+@EventBusSubscriber(modid = MintBoxes.MODID)
+public class KeyCraftingRecipes {
+    @SubscribeEvent
+    public static void onServerStarted(ServerStartedEvent event) {
+        MinecraftServer server = event.getServer();
+        RecipeManager manager = server.getRecipeManager();
 
-    public static void registerAll(PackOutput output, RecipeOutput out) {
-        // Stone -> Iron
-        addUpgradeRecipe("stone_to_iron",
-                ModRegistry.KEY_STONE.get(),
-                ModRegistry.KEY_IRON.get(),
-                ConfigValues.CRAFTING_UPGRADE_CATALYSTS.get("stone_to_iron"),
-                out);
+        if (!ConfigValues.ENABLE_CRAFTING_UPGRADES) {
+            MintBoxes.LOG("Key crafting disabled by config");
+            return;
+        }
 
-        // Iron -> Gold
-        addUpgradeRecipe("iron_to_gold",
-                ModRegistry.KEY_IRON.get(),
-                ModRegistry.KEY_GOLD.get(),
-                ConfigValues.CRAFTING_UPGRADE_CATALYSTS.get("iron_to_gold"),
-                out);
+        for (Map.Entry<String, String> e : ConfigValues.CRAFTING_UPGRADE_CATALYSTS.entrySet()) {
+            String upgrade = e.getKey();
+            String catalystId = e.getValue();
 
-        // Gold -> Diamond
-        addUpgradeRecipe("gold_to_diamond",
-                ModRegistry.KEY_GOLD.get(),
-                ModRegistry.KEY_DIAMOND.get(),
-                ConfigValues.CRAFTING_UPGRADE_CATALYSTS.get("gold_to_diamond"),
-                out);
+            Item input = getInput(upgrade);
+            Item output = getOutput(upgrade);
+            Item catalyst = BuiltInRegistries.ITEM.get(ResourceLocation.parse(catalystId));
 
-        // Note: Netherite key crafting intentionally disabled (config controlled).
+            if (input == null || output == null || catalyst == null) continue;
+
+            NonNullList<Ingredient> inputs = NonNullList.withSize(9, Ingredient.EMPTY);
+            for (int i = 0; i < 9; i++) inputs.set(i, Ingredient.of(input));
+            inputs.set(4, Ingredient.of(catalyst)); // middle slot
+
+            ShapedRecipePattern pattern = new ShapedRecipePattern(
+                    3, 3, inputs, Optional.empty()
+            );
+
+            ShapedRecipe recipe = new ShapedRecipe(
+                    "mintboxes", CraftingBookCategory.MISC,
+                    pattern, output.getDefaultInstance()
+            );
+
+            ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MintBoxes.MODID, "upgrade_" + upgrade);
+            RecipeHolder<ShapedRecipe> holder = new RecipeHolder<>(id, recipe);
+
+            // register into the manager
+            //manager.recipes.add(holder);
+        }
+
+        MintBoxes.LOG("Key upgrade recipes injected.");
     }
 
-    private static void addUpgradeRecipe(String name, Item inputKey, Item outputKey, String catalystId, RecipeOutput out) {
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, outputKey)
-                .define('K', inputKey)
-                .define('C', BuiltInRegistries.ITEM.get(ResourceLocation.parse(catalystId)))
-                .pattern("KKK")
-                .pattern("KCK")
-                .pattern("KKK")
-                .unlockedBy("has_key", InventoryChangeTrigger.TriggerInstance.hasItems(inputKey))
-                .save(out, ResourceLocation.parse(MintBoxes.MODID + ":upgrade_" + name));
+    private static Item getInput(String upgrade) {
+        return switch (upgrade) {
+            case "stone_to_iron" -> ModRegistry.KEY_STONE.get();
+            case "iron_to_gold" -> ModRegistry.KEY_IRON.get();
+            case "gold_to_diamond" -> ModRegistry.KEY_GOLD.get();
+            case "diamond_to_netherite" -> ConfigValues.ENABLE_NETHERITE_KEY_CRAFTING ? ModRegistry.KEY_DIAMOND.get() : null;
+            default -> null;
+        };
+    }
+
+    private static Item getOutput(String upgrade) {
+        return switch (upgrade) {
+            case "stone_to_iron" -> ModRegistry.KEY_IRON.get();
+            case "iron_to_gold" -> ModRegistry.KEY_GOLD.get();
+            case "gold_to_diamond" -> ModRegistry.KEY_DIAMOND.get();
+            case "diamond_to_netherite" -> ConfigValues.ENABLE_NETHERITE_KEY_CRAFTING ? ModRegistry.KEY_NETHERITE.get() : null;
+            default -> null;
+        };
     }
 }

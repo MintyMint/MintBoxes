@@ -15,10 +15,10 @@ public final class DefaultValues {
     // ---------------------------
     // LootBox Timings
     // ---------------------------
-    public static final int DEFAULT_OPEN_TICKS = 30;            // small delay before opening sound
-    public static final int DEFAULT_REWARD_DELAY_TICKS = 30;   // ticks until loot spawns
-    public static final int DEFAULT_CLOSE_TICKS = 30;           // ticks until box closes
-    public static final int DEFAULT_LOCKOUT_TICKS = 200;        // ticks before it can be opened again
+    public static final int DEFAULT_OPEN_TICKS = 15;            // small delay before opening sound
+    public static final int DEFAULT_REWARD_DELAY_TICKS = 20;   // ticks until loot spawns
+    public static final int DEFAULT_CLOSE_TICKS = 20;           // ticks until box closes
+    public static final int DEFAULT_LOCKOUT_TICKS = 60;        // ticks before it can be opened again
 
     // ---------------------------
     // Key Drop Chances
@@ -40,24 +40,28 @@ public final class DefaultValues {
     // ---------------------------
     // Crafting Catalysts
     // ---------------------------
-    public static final Map<String, String> CRAFTING_UPGRADE_CATALYSTS = new HashMap<>();
+    public static final boolean DEFAULT_ENABLE_CRAFTING_UPGRADES = true;
+
+    public static final boolean DEFAULT_ENABLE_NETHERITE_KEY_CRAFTING = false;
+
+    public static final Map<String, String> DEFAULT_CRAFTING_UPGRADE_CATALYSTS = new HashMap<>();
     static {
-        CRAFTING_UPGRADE_CATALYSTS.put("stone_to_iron", "minecraft:iron_block");
-        CRAFTING_UPGRADE_CATALYSTS.put("iron_to_gold", "minecraft:gold_block");
-        CRAFTING_UPGRADE_CATALYSTS.put("gold_to_diamond", "minecraft:diamond_block");
-        // Netherite crafting is disabled by default
+        DEFAULT_CRAFTING_UPGRADE_CATALYSTS.put("stone_to_iron", "minecraft:iron_block");
+        DEFAULT_CRAFTING_UPGRADE_CATALYSTS.put("iron_to_gold", "minecraft:gold_block");
+        DEFAULT_CRAFTING_UPGRADE_CATALYSTS.put("gold_to_diamond", "minecraft:diamond_block");
+        DEFAULT_CRAFTING_UPGRADE_CATALYSTS.put("diamond_to_netherite", "minecraft:netherite_block");
     }
 
     // ---------------------------
     // Rarity Colors
     // ---------------------------
-    public static final Map<String, String> RARITY_COLORS = new HashMap<>();
+    public static final Map<String, String> DEFAULT_RARITY_COLORS = new HashMap<>();
     static {
-        RARITY_COLORS.put("common",    "#FFFFFF"); // white
-        RARITY_COLORS.put("uncommon",  "#55FF55"); // green
-        RARITY_COLORS.put("rare",      "#5555FF"); // blue
-        RARITY_COLORS.put("epic",      "#AA00AA"); // purple
-        RARITY_COLORS.put("legendary", "#FFAA00"); // orange/gold
+        DEFAULT_RARITY_COLORS.put("common",    "#FFFFFF"); // white
+        DEFAULT_RARITY_COLORS.put("uncommon",  "#55FF55"); // green
+        DEFAULT_RARITY_COLORS.put("rare",      "#5555FF"); // blue
+        DEFAULT_RARITY_COLORS.put("epic",      "#AA00AA"); // purple
+        DEFAULT_RARITY_COLORS.put("legendary", "#FFAA00"); // orange/gold
     }
 
     // ---------------------------
@@ -81,6 +85,7 @@ public final class DefaultValues {
     );
 
     public static final List<String> DIAMOND_REWARDS = Arrays.asList(
+            "minecraft:diamond, 0.8, 1, 3, rare",
             "minecraft:diamond_pickaxe, 0.1, 1, 1, epic",
             "mintboxes:key_netherite, 0.01, 1, 1, legendary"
     );
@@ -133,5 +138,23 @@ public final class DefaultValues {
             case "special" -> SPECIAL_REWARDS;
             default -> List.of();
         };
+    }
+
+    // Shimmering defaults
+    public static final List<Integer> DEFAULT_SHIMMERING_COSTS = Arrays.asList(10, 20, 30);
+    public static boolean DEFAULT_ALLOW_SHIMMERING = true;
+    public static int DEFAULT_SHIMMERING_MAX_LEVEL = 5;
+
+    //Tinting
+    public static final Map<String, Integer> DEFAULT_LOOTBOX_TINTS = new HashMap<>();
+
+    static {
+        // ARGB hex (0xAARRGGBB), all fully opaque
+        DEFAULT_LOOTBOX_TINTS.put("stone",     0xFFAAAAAA); // gray
+        DEFAULT_LOOTBOX_TINTS.put("iron",      0xFFD8D8D8); // light gray
+        DEFAULT_LOOTBOX_TINTS.put("gold",      0xFFFFD700); // gold
+        DEFAULT_LOOTBOX_TINTS.put("diamond",   0xFF55FFFF); // cyan
+        DEFAULT_LOOTBOX_TINTS.put("netherite", 0xFF3C2A23); // dark brown
+        DEFAULT_LOOTBOX_TINTS.put("special",   0xFFFF00FF); // magenta
     }
 }

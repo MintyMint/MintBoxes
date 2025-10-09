@@ -1,8 +1,12 @@
 package com.mint.mintboxes.config;
 
+import com.mint.mintboxes.MintBoxes;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class DefaultConfig {
 
@@ -26,18 +30,15 @@ public final class DefaultConfig {
     public static ModConfigSpec.DoubleValue goldUpgradeChance;
     public static ModConfigSpec.DoubleValue diamondUpgradeChance;
 
+    public static final Map<String, ModConfigSpec.ConfigValue<String>> LOOTBOX_TINTS = new HashMap<>();
+
     static {
         BUILDER.push("LootBox Timings");
-        preOpenDelayTicks = BUILDER.comment("Ticks before lid starts opening after key is accepted")
-                .defineInRange("preOpenDelayTicks", 30, 0, 200);
-        openTicks = BUILDER.comment("Ticks box is visibly open before rewards")
-                .defineInRange("openTicks", 20, 0, 200);
-        rewardDelayTicks = BUILDER.comment("Delay between opening and rewards")
-                .defineInRange("rewardDelayTicks", 10, 0, 200);
-        closeTicks = BUILDER.comment("Ticks box remains open after rewards")
-                .defineInRange("closeTicks", 40, 0, 200);
-        cooldownTicks = BUILDER.comment("Cooldown before box can be reopened")
-                .defineInRange("cooldownTicks", 60, 0, 200);
+        preOpenDelayTicks = BUILDER.comment("Ticks before lid starts opening after key is accepted").defineInRange("preOpenDelayTicks", 30, 0, 200);
+        openTicks = BUILDER.comment("Ticks box is visibly open before rewards").defineInRange("openTicks", 20, 0, 200);
+        rewardDelayTicks = BUILDER.comment("Delay between opening and rewards").defineInRange("rewardDelayTicks", 10, 0, 200);
+        closeTicks = BUILDER.comment("Ticks box remains open after rewards").defineInRange("closeTicks", 40, 0, 200);
+        cooldownTicks = BUILDER.comment("Cooldown before box can be reopened").defineInRange("cooldownTicks", 60, 0, 200);
         BUILDER.pop();
 
         BUILDER.push("Key Drop Chances (%)");
@@ -55,10 +56,19 @@ public final class DefaultConfig {
         diamondUpgradeChance = BUILDER.defineInRange("diamondUpgradeChance", 10.0, 0.0, 100.0);
         BUILDER.pop();
 
+        BUILDER.push("LootBoxTints");
+        for (var entry : DefaultConfig.LOOTBOX_TINTS.entrySet()) {
+            LOOTBOX_TINTS.put(entry.getKey(),
+                    BUILDER.comment("ARGB hex tint for " + entry.getKey() + " lootbox")
+                            .define(entry.getKey() + "Tint",
+                                    String.format("#%08X", entry.getValue())));
+        }
+        BUILDER.pop();
+
         SPEC = BUILDER.build();
     }
 
     public static void register() {
-        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, SPEC);
+        ModLoadingContext.get().getActiveContainer().registerConfig(ModConfig.Type.COMMON, SPEC, MintBoxes.MODID + "-misc.toml");
     }
 }

@@ -1,13 +1,11 @@
 package com.mint.mintboxes.config;
 
 import com.mint.mintboxes.MintBoxes;
+import com.mint.mintboxes.loot.RewardTables;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 
-/**
- * Single place to load all config files (our simple TOML-ish files).
- */
 public final class ModConfigs {
     private ModConfigs() {}
 
@@ -17,6 +15,10 @@ public final class ModConfigs {
         KeyDropConfig.load(cfg);
         LootBoxConfig.load(cfg);
         LootTableConfig.load(cfg);
+        KeysConfig.load();
+        DefaultConfig.register();
+
+        RewardTables.rebuildFromConfig();
 
         MintBoxes.LOG("All MintBoxes configs loaded.");
     }

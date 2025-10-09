@@ -1,5 +1,7 @@
 package com.mint.mintboxes.config;
 
+import org.lwjgl.system.Pointer;
+
 import java.util.*;
 
 /**
@@ -11,8 +13,11 @@ public final class ConfigValues {
     // Tier order (used in config generation too)
     public static final List<String> KNOWN_TIERS = List.of("stone","iron","gold","diamond","netherite","special");
 
-    public static Map<String, String> CRAFTING_UPGRADE_CATALYSTS =
-            new HashMap<>(DefaultValues.CRAFTING_UPGRADE_CATALYSTS);
+    public static boolean ENABLE_CRAFTING_UPGRADES = DefaultValues.DEFAULT_ENABLE_CRAFTING_UPGRADES;
+
+    public static boolean ENABLE_NETHERITE_KEY_CRAFTING = DefaultValues.DEFAULT_ENABLE_NETHERITE_KEY_CRAFTING;
+
+    public static Map<String, String> CRAFTING_UPGRADE_CATALYSTS = new HashMap<>(DefaultValues.DEFAULT_CRAFTING_UPGRADE_CATALYSTS);
 
     // ---- Timings ----
     public static int OPEN_TICKS = DefaultValues.DEFAULT_OPEN_TICKS;
@@ -38,7 +43,7 @@ public final class ConfigValues {
     public static double DIAMOND_UPGRADE_CHANCE = DefaultValues.DEFAULT_DIAMOND_UPGRADE_CHANCE;
 
     // ---- Rarity colors (#RRGGBB) ----
-    public static final Map<String, String> RARITY_COLORS = new HashMap<>(DefaultValues.RARITY_COLORS);
+    public static final Map<String, String> RARITY_COLORS = new HashMap<>(DefaultValues.DEFAULT_RARITY_COLORS);
 
     // ---- Raw reward table strings per tier ----
     public static final Map<String, List<String>> REWARD_TABLES = new HashMap<>();
@@ -51,9 +56,16 @@ public final class ConfigValues {
         REWARD_TABLES.put("special", new ArrayList<>(DefaultValues.SPECIAL_REWARDS));
     }
 
-    // in ConfigValues.java
-
     // --- LootBox Reward Rolls ---
     public static Map<String, Integer> REWARD_MIN_ROLLS = new HashMap<>(DefaultValues.DEFAULT_ROLL_MIN);
     public static Map<String, Integer> REWARD_MAX_ROLLS = new HashMap<>(DefaultValues.DEFAULT_ROLL_MAX);
+
+    // Shimmering settings
+    public static boolean ALLOW_SHIMMERING = DefaultValues.DEFAULT_ALLOW_SHIMMERING;
+    public static int SHIMMERING_MAX_LEVEL = DefaultValues.DEFAULT_SHIMMERING_MAX_LEVEL;
+    public static List<Integer> SHIMMERING_LEVEL_COSTS = DefaultValues.DEFAULT_SHIMMERING_COSTS;
+
+    //Tinting
+    public static final Map<String, Integer> LOOTBOX_TINTS = new HashMap<>(DefaultValues.DEFAULT_LOOTBOX_TINTS);
+
 }
